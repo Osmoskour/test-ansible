@@ -1,0 +1,47 @@
+---
+- name: Deploy EC2 instance
+  hosts: localhost
+  connection: local
+  gather_facts: false
+
+  collections:
+    - amazon.aws
+
+  vars:
+
+    aws_region: "{{ aws_region | default('eu-west-3') }}"
+    vm_name: "{{ vm_name | default('test-vm') }}"
+    instance_type: "{{ instance_type | default('t3.micro') }}"
+
+  tasks:
+
+    - name: Create EC2 instance
+      amazon.aws.ec2_instance:
+        name: "{{ vm_name }}"
+
+        image_id: "{{ ami_id }}"
+        instance_type: "{{ instance_type }}"
+
+        region: "{{ aws_region }}"
+
+        vpc_subnet_id: "{{ subnet_id }}"
+
+        security_group: "{{ security_group_id }}"
+
+        key_name: "{{ keypair_name }}"
+
+        wait: true
+
+        tags:
+          Name: "{{ vm_name }}"
+          Environment: "{{ environment | default('dev') }}"
+          ManagedBy: Ansible
+
+      register: ec2
+
+    - name: Display instance information
+      ansible.builtin.debug:
+        msg:
+          - "Instance ID: {{ ec2.instances[0].instance_id }}"
+          - "Private IP : {{ ec2.instances[0].private_ip_address }}"
+          - "Public IP  : {{ ec2.instances[0].public_ip_address | default('N/A') }}"
