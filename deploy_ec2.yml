@@ -2,6 +2,14 @@
 - name: Creating an EC2 Instance with Creating a VPC and Subnet Id
   hosts: localhost
   tasks:
+    - name: Display environment variables
+      ansible.builtin.debug:
+        msg: "'{{ lookup('ansible.builtin.env', 'AWS_ACCESS_KEY_ID') }}'"
+
+    - name: Display environment variables 2
+      ansible.builtin.debug:
+        msg: "'{{ lookup('ansible.builtin.env', 'AWS_ACCESS_KEY') }}'"
+        
     - name: Create a new VPC 
       amazon.aws.ec2_vpc_net:
         name: "Ansible-Test"
