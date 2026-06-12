@@ -2,18 +2,8 @@
 - name: Creating an EC2 Instance with Creating a VPC and Subnet Id
   hosts: localhost
   tasks:
-    - name: Display environment variables
-      ansible.builtin.debug:
-        msg: "'{{ lookup('ansible.builtin.env', 'AWS_ACCESS_KEY_ID') }}'"
-
-    - name: Display environment variables 2
-      ansible.builtin.debug:
-        msg: "'{{ lookup('ansible.builtin.env', 'AWS_SECRET_ACCESS_KEY') }}'"
-        
     - name: Create a new VPC 
       amazon.aws.ec2_vpc_net:
-        access_key: "{{ lookup('ansible.builtin.env', 'AWS_ACCESS_KEY_ID') }}"
-        secret_key: "{{ lookup('ansible.builtin.env', 'AWS_SECRET_ACCESS_KEY') }}"
         name: "Ansible-Test"
         cidr_block: "{{ cidr_block }}"
         region: "{{ region }}"
@@ -21,8 +11,6 @@
   
     - name: Create a new Subnet
       amazon.aws.ec2_vpc_subnet:
-        access_key: "{{ lookup('ansible.builtin.env', 'AWS_ACCESS_KEY_ID') }}"
-        secret_key: "{{ lookup('ansible.builtin.env', 'AWS_SECRET_ACCESS_KEY') }}"
         cidr: "{{ cidr }}"
         region: "{{ region }}"
         vpc_id: "{{ vpc.vpc.id }}"
@@ -30,8 +18,6 @@
     
     - name: Create a Security Group  
       amazon.aws.ec2_security_group:
-        access_key: "{{ lookup('ansible.builtin.env', 'AWS_ACCESS_KEY_ID') }}"
-        secret_key: "{{ lookup('ansible.builtin.env', 'AWS_SECRET_ACCESS_KEY') }}"
         name: "Ansible-Test-Security-Group"
         description: "Ansible-Testing"
         vpc_id: "{{ vpc.vpc.id }}"
@@ -52,8 +38,6 @@
     
     - name: Launch an EC2 Instance
       amazon.aws.ec2_instance:
-        access_key: "{{ lookup('ansible.builtin.env', 'AWS_ACCESS_KEY_ID') }}"
-        secret_key: "{{ lookup('ansible.builtin.env', 'AWS_SECRET_ACCESS_KEY') }}"
         name: "Test-Ansible"
         key_name: "{{ key_name }}"
         vpc_subnet_id: "{{ subnet.subnet.id }}"
