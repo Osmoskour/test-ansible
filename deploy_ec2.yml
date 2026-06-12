@@ -35,6 +35,16 @@
 
     - ansible.builtin.debug:
         var: subnet.subnet.id
+
+    - name: create a new EC2 key pair, returns generated private key
+      # use no_log to avoid private key being displayed into output
+      amazon.aws.ec2_key:
+        name: "{{ key_name }}"
+      no_log: true
+      register: aws_ec2_key_pair
+
+    - ansible.builtin.debug:
+        var: aws_ec2_key_pair.id
     
     - name: Launch an EC2 Instance
       amazon.aws.ec2_instance:
